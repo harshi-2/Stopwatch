@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch with Lap</title>
+  <style>
+    body
+    {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f4f4f4;
+    }
+    #display {
+      font-size: 2em;
+      margin-bottom: 20px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    #lapDisplay {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    #controls {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    button {
+      font-size: 1em;
+      margin: 0 10px;
+      padding: 10px;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #lapList {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .lapItem {
+      margin: 5px;
+    }
+
+    #developer {
+      font-size: 1em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>STOPWATCH</h1>
+  </header>
+
+  <div id="display">00:00:00</div>
+  <div id="lapDisplay">Lap Time: 00:00:00</div>
+
+  <div id="controls">
+    <button onclick="startStop()">Start/Stop</button>
+    <button onclick="lap()">Lap</button>
+    <button onclick="reset()">Reset</button>
+  </div>
+  <ul id="lapList"></ul>
+
+  <div id="developer">
+    Developed by: Harshith
+  </div>
+
+  <script>
+    let timer; // Variable to hold the setInterval
+    let seconds = 0;
+    let minutes = 0;
+    let hours = 0;
+    let lapSeconds = 0;
+    let lapMinutes = 0;
+    let lapHours = 0;
+
+    let lapNumber = 1;
+
+    function startStop() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      } else {
+        timer = setInterval(updateDisplay, 1000);
+      }
+    }
+
+    function lap() {
+      const lapTime = pad(lapHours) + ':' + pad(lapMinutes) + ':' + pad(lapSeconds);
+      const lapItem = document.createElement('li');
+      lapItem.className = 'lapItem';
+      lapItem.innerHTML = `<strong>Lap ${lapNumber}:</strong> ${lapTime}`;
+      document.getElementById('lapList').appendChild(lapItem);
+
+      lapNumber++;
+
+      lapSeconds = 0;
+      lapMinutes = 0;
+      lapHours = 0;
+      updateLapDisplay();
+    }
+
+    function reset() {
+      clearInterval(timer);
+      timer = null;
+      seconds = 0;
+      minutes = 0;
+      hours = 0;
+      lapSeconds = 0;
+      lapMinutes = 0;
+      lapHours = 0;
+      lapNumber = 1;
+
+      document.getElementById('display').innerText = '00:00:00';
+      document.getElementById('lapDisplay').innerText = 'Lap Time: 00:00:00';
+      document.getElementById('lapList').innerHTML = '';
+    }
+
+    function updateDisplay() {
+      seconds++;
+      lapSeconds++;
+
+      if (seconds === 60) {
+        seconds = 0;
+        minutes++;
+
+        if (minutes === 60) {
+          minutes = 0;
+          hours++;
+        }
+      }
+
+      if (lapSeconds === 60) {
+        lapSeconds = 0;
+        lapMinutes++;
+
+        if (lapMinutes === 60) {
+          lapMinutes = 0;
+          lapHours++;
+        }
+      }
+
+      const formattedTime = pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+      document.getElementById('display').innerText = formattedTime;
+
+      updateLapDisplay();
+    }
+
+    function updateLapDisplay() {
+      const lapTime = pad(lapHours) + ':' + pad(lapMinutes) + ':' + pad(lapSeconds);
+      document.getElementById('lapDisplay').innerText = 'Lap Time: ' + lapTime;
+    }
+
+    function pad(value) {
+      return value < 10 ? '0' + value : value;
+    }
+  </script>
+
+
+</body>
+</html>
